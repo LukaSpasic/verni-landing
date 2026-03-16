@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="sr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verni — Digitalni loyalty program</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --gold: #C9A84C;
+      --gold-light: #E2C47A;
+      --gold-dim: rgba(201,168,76,0.15);
+      --espresso: #120D07;
+      --espresso-mid: #1E1610;
+      --espresso-surface: #261E13;
+      --espresso-card: #2E2416;
+      --cream: #F5EDD8;
+      --cream-muted: #C8B89A;
+      --cream-dim: rgba(245,237,216,0.6);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--espresso);
+      color: var(--cream);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      padding: 20px 48px;
+      display: flex; align-items: center; justify-content: space-between;
+      background: linear-gradient(to bottom, rgba(18,13,7,0.95) 0%, transparent 100%);
+      backdrop-filter: blur(4px);
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 10px;
+      text-decoration: none;
+    }
+    .nav-logo-mark {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: var(--gold);
+      display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 18px; font-weight: 600; color: var(--espresso);
+      letter-spacing: -0.5px;
+    }
+    .nav-logo-text {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 22px; font-weight: 600;
+      color: var(--cream); letter-spacing: 2px; text-transform: uppercase;
+    }
+    nav a.nav-cta {
+      text-decoration: none;
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      padding: 8px 24px;
+      border-radius: 100px;
+      font-size: 13px; font-weight: 500; letter-spacing: 0.5px;
+      transition: all 0.3s ease;
+    }
+    nav a.nav-cta:hover { background: var(--gold); color: var(--espresso); }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 70% 60% at 50% 30%, rgba(201,168,76,0.10) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(201,168,76,0.06) 0%, transparent 60%);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; opacity: 0.04;
+      background-image: linear-gradient(var(--gold) 1px, transparent 1px),
+        linear-gradient(90deg, var(--gold) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 12px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 32px;
+      animation: fadeSlideUp 0.8s ease both;
+    }
+    .hero-badge::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--gold); }
+    .hero-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(52px, 8vw, 112px);
+      font-weight: 300; line-height: 0.95;
+      color: var(--cream);
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      animation: fadeSlideUp 0.8s 0.15s ease both;
+    }
+    .hero-title em {
+      font-style: italic; color: var(--gold); font-weight: 300;
+    }
+    .hero-sub {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(20px, 3vw, 32px);
+      font-weight: 300; font-style: italic;
+      color: var(--cream-muted);
+      margin-bottom: 24px;
+      animation: fadeSlideUp 0.8s 0.25s ease both;
+    }
+    .hero-desc {
+      max-width: 560px; font-size: 16px; line-height: 1.7;
+      color: var(--cream-dim); font-weight: 300;
+      margin-bottom: 48px;
+      animation: fadeSlideUp 0.8s 0.35s ease both;
+    }
+    .hero-actions {
+      display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+      animation: fadeSlideUp 0.8s 0.45s ease both;
+    }
+    .btn-primary {
+      background: var(--gold); color: var(--espresso);
+      padding: 16px 40px; border-radius: 100px;
+      font-size: 15px; font-weight: 600; text-decoration: none; letter-spacing: 0.3px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--gold-light); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(201,168,76,0.3); }
+    .btn-secondary {
+      border: 1px solid rgba(245,237,216,0.25); color: var(--cream);
+      padding: 16px 40px; border-radius: 100px;
+      font-size: 15px; font-weight: 400; text-decoration: none; letter-spacing: 0.3px;
+      transition: all 0.3s ease;
+      display: inline-block;
+    }
+    .btn-secondary:hover { border-color: var(--gold); color: var(--gold); transform: translateY(-2px); }
+
+    .hero-scroll {
+      margin-top: 72px; opacity: 0.4;
+      animation: bounce 2s ease infinite;
+      font-size: 13px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--cream-muted);
+    }
+    .hero-scroll span { display: block; text-align: center; margin-bottom: 8px; }
+    .scroll-line {
+      width: 1px; height: 48px; background: linear-gradient(to bottom, var(--gold), transparent);
+      margin: 0 auto;
+    }
+
+    /* ── SECTION BASE ── */
+    section { padding: 120px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 20px;
+      display: flex; align-items: center; gap: 12px;
+    }
+    .section-label::before { content: ''; width: 24px; height: 1px; background: var(--gold); }
+    .section-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(36px, 5vw, 64px);
+      font-weight: 300; line-height: 1.1;
+      color: var(--cream);
+    }
+    .section-title em { font-style: italic; color: var(--gold); }
+    .section-body { font-size: 16px; line-height: 1.8; color: var(--cream-dim); font-weight: 300; max-width: 560px; }
+
+    /* ── CONCEPT ── */
+    #concept { background: var(--espresso-mid); }
+    .concept-grid {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center;
+    }
+    .concept-visual {
+      position: relative; display: flex; align-items: center; justify-content: center;
+    }
+    .phone-mock {
+      width: 220px; height: 420px; border-radius: 36px;
+      background: var(--espresso-card);
+      border: 2px solid rgba(201,168,76,0.3);
+      position: relative; overflow: hidden;
+      box-shadow: 0 40px 80px rgba(0,0,0,0.5), inset 0 1px 0 rgba(201,168,76,0.2);
+    }
+    .phone-screen {
+      position: absolute; inset: 16px;
+      border-radius: 24px;
+      background: linear-gradient(160deg, #201810 0%, #160F08 100%);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 24px 16px; gap: 16px;
+    }
+    .phone-logo-ring {
+      width: 56px; height: 56px; border-radius: 50%;
+      background: var(--gold); display: flex; align-items: center; justify-content: center;
+      font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 600; color: var(--espresso);
+    }
+    .phone-biz-name { font-size: 13px; font-weight: 600; color: var(--cream); text-align: center; }
+    .phone-points {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 42px; font-weight: 600; color: var(--gold); line-height: 1;
+    }
+    .phone-points-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--cream-muted); margin-top: -8px; }
+    .phone-bar {
+      width: 100%; height: 6px; border-radius: 100px;
+      background: rgba(201,168,76,0.15);
+      position: relative; overflow: hidden;
+    }
+    .phone-bar::after {
+      content: ''; position: absolute; inset-block: 0; left: 0;
+      width: 68%; background: var(--gold); border-radius: 100px;
+    }
+    .phone-bar-label { font-size: 10px; color: var(--cream-muted); align-self: flex-start; }
+    .phone-reward {
+      margin-top: auto; width: 100%;
+      background: rgba(201,168,76,0.1); border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 12px; padding: 12px; text-align: center;
+    }
+    .phone-reward-title { font-size: 11px; color: var(--gold); letter-spacing: 1px; text-transform: uppercase; font-weight: 500; }
+    .phone-reward-val { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--cream); margin-top: 2px; }
+
+    .phone-glow {
+      position: absolute; width: 200px; height: 200px; border-radius: 50%;
+      background: radial-gradient(circle, rgba(201,168,76,0.2), transparent 70%);
+      left: 50%; top: 50%; transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+
+    .concept-points { display: flex; flex-direction: column; gap: 32px; }
+    .concept-point { display: flex; gap: 20px; align-items: flex-start; }
+    .cp-num {
+      min-width: 40px; height: 40px; border-radius: 50%;
+      border: 1px solid var(--gold); color: var(--gold);
+      font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .cp-body h4 { font-size: 16px; font-weight: 600; color: var(--cream); margin-bottom: 6px; }
+    .cp-body p { font-size: 14px; line-height: 1.7; color: var(--cream-dim); font-weight: 300; }
+
+    /* ── HOW IT WORKS ── */
+    #how {
+      background: var(--espresso);
+    }
+    .how-header { text-align: center; margin-bottom: 72px; }
+    .how-header .section-label { justify-content: center; }
+    .how-header .section-label::before { display: none; }
+
+    .tracks { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; }
+    .track {
+      background: var(--espresso-surface);
+      border: 1px solid rgba(201,168,76,0.15);
+      border-radius: 24px; padding: 40px; position: relative; overflow: hidden;
+      transition: border-color 0.3s ease, transform 0.3s ease;
+    }
+    .track:hover { border-color: rgba(201,168,76,0.4); transform: translateY(-4px); }
+    .track::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--gold), transparent);
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .track:hover::before { opacity: 1; }
+    .track-icon {
+      width: 52px; height: 52px; border-radius: 14px;
+      background: var(--gold-dim); border: 1px solid rgba(201,168,76,0.3);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 24px; margin-bottom: 24px;
+    }
+    .track h3 {
+      font-family: 'Cormorant Garamond', serif; font-size: 26px; font-weight: 400;
+      color: var(--cream); margin-bottom: 12px;
+    }
+    .track-tag {
+      display: inline-block; font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+      color: var(--gold); font-weight: 500; margin-bottom: 16px;
+    }
+    .track p { font-size: 14px; line-height: 1.8; color: var(--cream-dim); font-weight: 300; margin-bottom: 24px; }
+    .track-steps { display: flex; flex-direction: column; gap: 12px; }
+    .track-step { display: flex; gap: 12px; align-items: flex-start; }
+    .ts-dot {
+      min-width: 6px; height: 6px; border-radius: 50%; background: var(--gold);
+      margin-top: 8px; flex-shrink: 0;
+    }
+    .track-step span { font-size: 13px; color: var(--cream-dim); line-height: 1.6; }
+
+    /* ── BUSINESSES ── */
+    #businesses { background: var(--espresso-mid); }
+    .biz-layout { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+    .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .biz-card {
+      background: var(--espresso-card);
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 16px; padding: 20px; cursor: default;
+      transition: all 0.3s ease;
+    }
+    .biz-card:hover { border-color: rgba(201,168,76,0.35); background: var(--espresso-surface); }
+    .biz-icon { font-size: 28px; margin-bottom: 10px; }
+    .biz-name { font-size: 14px; font-weight: 500; color: var(--cream); }
+
+    /* ── OWNER BENEFITS ── */
+    #benefits { background: var(--espresso); }
+    .benefits-header { max-width: 640px; margin-bottom: 72px; }
+    .benefits-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .benefit-card {
+      padding: 36px 28px;
+      border: 1px solid rgba(201,168,76,0.12);
+      border-radius: 20px;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+    .benefit-card:hover { border-color: rgba(201,168,76,0.3); background: var(--espresso-surface); transform: translateY(-4px); }
+    .benefit-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 52px; font-weight: 300; color: rgba(201,168,76,0.15);
+      position: absolute; top: 20px; right: 24px; line-height: 1;
+    }
+    .benefit-icon { font-size: 28px; margin-bottom: 20px; }
+    .benefit-title { font-size: 16px; font-weight: 600; color: var(--cream); margin-bottom: 10px; }
+    .benefit-body { font-size: 13px; line-height: 1.8; color: var(--cream-dim); font-weight: 300; }
+
+    /* ── STATS ── */
+    #stats {
+      background: linear-gradient(135deg, #1E1610, #26190E);
+      border-top: 1px solid rgba(201,168,76,0.15);
+      border-bottom: 1px solid rgba(201,168,76,0.15);
+      padding: 80px 24px;
+    }
+    .stats-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 48px; }
+    .stat-item { text-align: center; }
+    .stat-num {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 56px; font-weight: 300; color: var(--gold); line-height: 1;
+    }
+    .stat-label { font-size: 13px; color: var(--cream-muted); margin-top: 8px; font-weight: 300; line-height: 1.5; }
+
+    /* ── CTA ── */
+    #cta {
+      background: var(--espresso);
+      text-align: center; padding: 140px 24px;
+      position: relative; overflow: hidden;
+    }
+    #cta::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 60% 60% at 50% 50%, rgba(201,168,76,0.08) 0%, transparent 70%);
+    }
+    .cta-inner { position: relative; max-width: 700px; margin: 0 auto; }
+    .cta-title {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(40px, 6vw, 80px); font-weight: 300;
+      color: var(--cream); line-height: 1.05; margin-bottom: 24px;
+    }
+    .cta-title em { font-style: italic; color: var(--gold); }
+    .cta-body { font-size: 16px; color: var(--cream-dim); line-height: 1.7; font-weight: 300; margin-bottom: 48px; }
+    .cta-form { display: flex; gap: 12px; max-width: 460px; margin: 0 auto; }
+    .cta-input {
+      flex: 1; padding: 16px 20px;
+      background: var(--espresso-surface);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 100px; color: var(--cream);
+      font-family: 'DM Sans', sans-serif; font-size: 14px;
+      outline: none; transition: border-color 0.3s;
+    }
+    .cta-input::placeholder { color: var(--cream-muted); }
+    .cta-input:focus { border-color: var(--gold); }
+    .cta-small { font-size: 12px; color: rgba(200,184,154,0.5); margin-top: 16px; }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--espresso-mid);
+      border-top: 1px solid rgba(201,168,76,0.1);
+      padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .footer-copy { font-size: 13px; color: var(--cream-muted); font-weight: 300; }
+    .footer-link { color: var(--gold); text-decoration: none; font-size: 13px; }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    /* ── INTERSECTION OBSERVER CLASSES ── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.visible { opacity: 1; transform: none; }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+
+    /* ── DIVIDER LINE ── */
+    .ornament {
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      padding: 48px 0;
+    }
+    .ornament-line { height: 1px; width: 80px; background: linear-gradient(to right, transparent, var(--gold)); }
+    .ornament-line.right { background: linear-gradient(to left, transparent, var(--gold)); }
+    .ornament-diamond { width: 6px; height: 6px; background: var(--gold); transform: rotate(45deg); }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      .concept-grid, .biz-layout, .tracks { grid-template-columns: 1fr; gap: 40px; }
+      .benefits-grid, .stats-grid { grid-template-columns: 1fr 1fr; gap: 16px; }
+      .phone-mock { width: 180px; height: 340px; }
+      .cta-form { flex-direction: column; border-radius: 16px; }
+      .cta-input { border-radius: 12px; }
+      .footer-inner { flex-direction: column; gap: 12px; text-align: center; }
+    }
+
+    @media (max-width: 480px) {
+      .benefits-grid, .stats-grid { grid-template-columns: 1fr; }
+      .biz-grid { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="#" class="nav-logo">
+      <div class="nav-logo-mark">V</div>
+      <span class="nav-logo-text">Verni</span>
+    </a>
+    <a href="#cta" class="nav-cta">Registruj biznis</a>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grid"></div>
+    <div class="hero-badge">Niš · Srbija · 2025</div>
+    <h1 class="hero-title">Jedan telefon.<br><em>Sve nagrade.</em></h1>
+    <p class="hero-sub">Digitalni loyalty program za lokalne biznise.</p>
+    <p class="hero-desc">Verni zamenjuje fizičke kartice za skupljanje pečata. Jedan QR kod — gost skuplja poene, vlasnik gradi lojalnost. Bez kase. Bez papira.</p>
+    <div class="hero-actions">
+      <a href="#cta" class="btn-primary">Pridruži se kao biznis</a>
+      <a href="#how" class="btn-secondary">Kako funkcioniše?</a>
+    </div>
+    <div class="hero-scroll">
+      <span>Saznaj više</span>
+      <div class="scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- CONCEPT -->
+  <section id="concept">
+    <div class="container">
+      <div class="concept-grid">
+        <div class="concept-visual reveal">
+          <div class="phone-glow"></div>
+          <div class="phone-mock">
+            <div class="phone-screen">
+              <div class="phone-logo-ring">V</div>
+              <div class="phone-biz-name">Kafić Kod Bake</div>
+              <div class="phone-points">340</div>
+              <div class="phone-points-label">Poeni</div>
+              <div class="phone-bar-label">68 od 100 do nagrade</div>
+              <div class="phone-bar"></div>
+              <div class="phone-reward">
+                <div class="phone-reward-title">Sledeća nagrada</div>
+                <div class="phone-reward-val">Besplatna kafa ☕</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="concept-content reveal reveal-delay-1">
+          <div class="section-label">Šta je Verni?</div>
+          <h2 class="section-title" style="margin-bottom:24px">Lojalnost,<br><em>digitalno.</em></h2>
+          <p class="section-body" style="margin-bottom:40px">Umesto hrpe papirnih kartica u novčaniku — jedna aplikacija. Gost skenira QR kod, skuplja poene, dobija nagrade. Vlasnik prati sve u realnom vremenu.</p>
+          <div class="concept-points">
+            <div class="concept-point">
+              <div class="cp-num">1</div>
+              <div class="cp-body">
+                <h4>Gost skenira, automatski se prepoznaje biznis</h4>
+                <p>Fiskalni račun ili QR sesija — Verni automatski zna kod koje si kafane, teretane ili salona, bez ručnog biranje.</p>
+              </div>
+            </div>
+            <div class="concept-point">
+              <div class="cp-num">2</div>
+              <div class="cp-body">
+                <h4>Poeni se akumuliraju u jednoj aplikaciji</h4>
+                <p>Svi omiljeni lokali na jednom mestu. Gost vidi napredak, vlasnik vidi ko dolazi i koliko često.</p>
+              </div>
+            </div>
+            <div class="concept-point">
+              <div class="cp-num">3</div>
+              <div class="cp-body">
+                <h4>Nagrade vlasnik kontroliše sam</h4>
+                <p>Nije potrebna integracija sa kasom. Vlasnik šalje nagrade direktno iz admin panela — jednostavno i brzo.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="container">
+      <div class="how-header reveal">
+        <div class="section-label">Kako funkcioniše?</div>
+        <h2 class="section-title">Dva načina da<br><em>skupiš poene</em></h2>
+      </div>
+      <div class="tracks">
+        <div class="track reveal reveal-delay-1">
+          <div class="track-icon">🧾</div>
+          <div class="track-tag">Put 1 · Kafići, Restorani, Prodavnice</div>
+          <h3>Skeniranje fiskalnog računa</h3>
+          <p>Platio si, dobijaš račun — skeniraj ga, i to je to. Verni automatski prepoznaje biznis putem PIB-a i dodaje poene.</p>
+          <div class="track-steps">
+            <div class="track-step"><div class="ts-dot"></div><span>Dobij fiskalni račun pri plaćanju</span></div>
+            <div class="track-step"><div class="ts-dot"></div><span>Otvori Verni i skeniraj QR kod sa računa</span></div>
+            <div class="track-step"><div class="ts-dot"></div><span>Biznis se automatski prepoznaje — poeni se dodaju</span></div>
+          </div>
+        </div>
+        <div class="track reveal reveal-delay-2">
+          <div class="track-icon">📍</div>
+          <div class="track-tag">Put 2 · Teretane, Saloni, Tutori, Studiji</div>
+          <h3>QR kod sesije</h3>
+          <p>Za biznise koji ne izdaju račune — vlasnik generiše vremenski ograničen QR kod pre ili tokom svake sesije.</p>
+          <div class="track-steps">
+            <div class="track-step"><div class="ts-dot"></div><span>Vlasnik generiše QR kod za tu sesiju</span></div>
+            <div class="track-step"><div class="ts-dot"></div><span>Gost skenira kod na licu mesta</span></div>
+            <div class="track-step"><div class="ts-dot"></div><span>Geolokacija verifikuje prisustvo — poeni potvrđeni</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BUSINESSES -->
+  <section id="businesses">
+    <div class="container">
+      <div class="biz-layout">
+        <div class="reveal">
+          <div class="section-label">Za koga je Verni?</div>
+          <h2 class="section-title" style="margin-bottom:24px">Svaki lokalni<br><em>biznis u Nišu.</em></h2>
+          <p class="section-body">Bez obzira da li si kafić, teretana, frizerski salon ili privatni tutor — Verni ima rešenje za tvoj tip biznisa.</p>
+          <div class="ornament" style="justify-content:flex-start; padding:32px 0 0;">
+            <div class="ornament-line"></div>
+            <div class="ornament-diamond"></div>
+            <div class="ornament-line right"></div>
+          </div>
+        </div>
+        <div class="biz-grid reveal reveal-delay-1">
+          <div class="biz-card">
+            <div class="biz-icon">☕</div>
+            <div class="biz-name">Kafići</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">🍕</div>
+            <div class="biz-name">Restorani</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">🏋️</div>
+            <div class="biz-name">Teretane</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">💅</div>
+            <div class="biz-name">Saloni lepote</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">✂️</div>
+            <div class="biz-name">Berberi</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">🧘</div>
+            <div class="biz-name">Pilates & Yoga</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">📚</div>
+            <div class="biz-name">Privatni tutori</div>
+          </div>
+          <div class="biz-card">
+            <div class="biz-icon">🛍️</div>
+            <div class="biz-name">Lokalne radnje</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BENEFITS -->
+  <section id="benefits">
+    <div class="container">
+      <div class="benefits-header reveal">
+        <div class="section-label">Za vlasnike biznisa</div>
+        <h2 class="section-title" style="margin-bottom:16px">Zašto Verni<br><em>radi za tebe?</em></h2>
+        <p class="section-body" style="margin-top: 16px;">Prati ko dolazi, kada i koliko često. Nagrađuj vernost. Vraćaj goste. Sve bez skupih sistema i složenih integracija.</p>
+      </div>
+      <div class="benefits-grid">
+        <div class="benefit-card reveal reveal-delay-1">
+          <div class="benefit-num">01</div>
+          <div class="benefit-icon">⚡</div>
+          <div class="benefit-title">Lako podešavanje</div>
+          <div class="benefit-body">Registracija u par minuta. Ne treba ti poseban hardver ni integracija sa kasom. Počinješ odmah.</div>
+        </div>
+        <div class="benefit-card reveal reveal-delay-2">
+          <div class="benefit-num">02</div>
+          <div class="benefit-icon">📊</div>
+          <div class="benefit-title">Uvid u statistiku</div>
+          <div class="benefit-body">Koliko puta je gost došao. Koja nagrada se najčešće koristi. Ko su tvoji najverniji gosti — sve u jednom dashbordu.</div>
+        </div>
+        <div class="benefit-card reveal reveal-delay-3">
+          <div class="benefit-num">03</div>
+          <div class="benefit-icon">🎁</div>
+          <div class="benefit-title">Nagrade na tvoj način</div>
+          <div class="benefit-body">Šalji nagrade direktno iz admin panela. Besplatna kafa, popust, besplatna sesija — ti odlučuješ.</div>
+        </div>
+        <div class="benefit-card reveal reveal-delay-1">
+          <div class="benefit-num">04</div>
+          <div class="benefit-icon">🔄</div>
+          <div class="benefit-title">Gosti se vraćaju</div>
+          <div class="benefit-body">Istraživanja pokazuju da gosti sa loyalty programom dolaze 40% češće. Verni to radi umesto tebe.</div>
+        </div>
+        <div class="benefit-card reveal reveal-delay-2">
+          <div class="benefit-num">05</div>
+          <div class="benefit-icon">🛡️</div>
+          <div class="benefit-title">Zaštita od zloupotrebe</div>
+          <div class="benefit-body">Geolokacija, vremenski ograničeni kodovi i limit upotrebe — svaki poen je zaslužen, ni jedan nije prevara.</div>
+        </div>
+        <div class="benefit-card reveal reveal-delay-3">
+          <div class="benefit-num">06</div>
+          <div class="benefit-icon">🇷🇸</div>
+          <div class="benefit-title">Pravljeno za Niš</div>
+          <div class="benefit-body">Lokalna platforma, srpski jezik, podrška na tvom jeziku. Razumemo specifičnosti domaćeg tržišta.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section id="stats">
+    <div class="container">
+      <div class="stats-grid">
+        <div class="stat-item reveal">
+          <div class="stat-num">5×</div>
+          <div class="stat-label">jeftinije zadržati<br>starog gosta nego<br>pridobiti novog</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-1">
+          <div class="stat-num">67%</div>
+          <div class="stat-label">korisnika troši više<br>kada ima<br>loyalty program</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-2">
+          <div class="stat-num">2 min</div>
+          <div class="stat-label">koliko traje<br>registracija biznisa<br>na Verni</div>
+        </div>
+        <div class="stat-item reveal reveal-delay-3">
+          <div class="stat-num">0 din</div>
+          <div class="stat-label">hardver, kasa<br>integracija ili<br>skupa oprema</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section id="cta">
+    <div class="container">
+      <div class="cta-inner reveal">
+        <div class="section-label" style="justify-content:center">
+          <span>Pilot program · Niš 2025</span>
+        </div>
+        <h2 class="cta-title">Budi <em>prvi</em><br>u Nišu.</h2>
+        <p class="cta-body">Otvoreni smo za pilot partnere — lokalne biznise koji žele da budu deo prvog talasa Verni programa. Ograničen broj mesta.</p>
+        <div class="cta-form">
+          <input type="email" class="cta-input" placeholder="tvoj@email.com">
+          <a href="#" class="btn-primary" style="white-space:nowrap; border:none; cursor:pointer; font-size:14px; padding:16px 28px;">Prijavi se</a>
+        </div>
+        <p class="cta-small">Bez obaveze. Javimo se u roku od 48 sati.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="nav-logo" style="gap:10px">
+        <div class="nav-logo-mark">V</div>
+        <span class="nav-logo-text">Verni</span>
+      </div>
+      <span class="footer-copy">© 2025 Verni · Niš, Srbija · <a href="mailto:hello@verni.rs" class="footer-link">hello@verni.rs</a></span>
+    </div>
+  </footer>
+
+  <script>
+    // Intersection Observer for reveal animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) { e.target.classList.add('visible'); }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // Smooth CTA form
+    document.querySelector('.cta-form a').addEventListener('click', function(e) {
+      e.preventDefault();
+      const input = document.querySelector('.cta-input');
+      if (input.value.includes('@')) {
+        this.textContent = '✓ Prijavljeni ste!';
+        this.style.background = '#4CAF50';
+        input.disabled = true;
+      } else {
+        input.style.borderColor = '#C9A84C';
+        input.focus();
+      }
+    });
+  </script>
+</body>
+</html>
